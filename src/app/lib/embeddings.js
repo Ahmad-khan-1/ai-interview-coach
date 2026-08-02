@@ -1,4 +1,9 @@
-import { pipeline } from "@xenova/transformers";
+import { pipeline, env } from "@xenova/transformers";
+
+// Vercel serverless environment mein native ONNX bindings (.so files)
+// kaam nahi karti, is liye WASM backend force karte hain (portable hai)
+env.backends.onnx.wasm.numThreads = 1;
+env.backends.setPriority(["wasm", "cpu"]);
 
 // Model ko sirf ek baar load karenge (variable mein cache kar ke)
 let embedder = null;
