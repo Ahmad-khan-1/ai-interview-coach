@@ -1,9 +1,10 @@
-import { pipeline, env } from "@xenova/transformers";
+import { pipeline } from "@xenova/transformers";
+import { executionProviders } from "@xenova/transformers/src/backends/onnx.js";
 
 // Vercel serverless environment mein native ONNX bindings (.so files)
-// kaam nahi karti, is liye WASM backend force karte hain (portable hai)
-env.backends.onnx.wasm.numThreads = 1;
-env.backends.setPriority(["wasm", "cpu"]);
+// nahi milti, is liye 'cpu' backend hata kar sirf 'wasm' (portable) rakhte hain
+executionProviders.length = 0;
+executionProviders.push("wasm");
 
 // Model ko sirf ek baar load karenge (variable mein cache kar ke)
 let embedder = null;
