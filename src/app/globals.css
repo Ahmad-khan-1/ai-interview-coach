@@ -1,26 +1,71 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-bg: #140f1f;
+  --color-surface: #1f1830;
+  --color-accent: #ff5c72;
+  --color-accent-secondary: #5b6ef5;
+  --color-text-primary: #f4f0fa;
+  --color-text-muted: #9b94b0;
+
+  --font-display: "Fraunces", serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.light {
+  --color-bg: #fbf9fd;
+  --color-surface: #f1ecf7;
+  --color-accent: #e8425a;
+  --color-accent-secondary: #4a5ad1;
+  --color-text-primary: #1e1730;
+  --color-text-muted: #6b6480;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  transition:
+    background-color 0.4s ease,
+    color 0.4s ease;
+  overflow-x: hidden;
+}
+
+/* Signature element: ambient floating glow blobs — "voice/energy" feel */
+@keyframes float-glow {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -40px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.95);
+  }
+}
+
+.ambient-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+  animation: float-glow 14s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Waveform pulse — used on focused/active states */
+@keyframes wave-pulse {
+  0%,
+  100% {
+    transform: scaleY(0.4);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.wave-bar {
+  animation: wave-pulse 1s ease-in-out infinite;
 }
