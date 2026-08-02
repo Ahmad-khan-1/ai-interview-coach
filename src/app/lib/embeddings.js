@@ -1,33 +1,25 @@
-import { pipeline } from "@xenova/transformers";
-import { executionProviders } from "@xenova/transformers/src/backends/onnx.js";
+import { GoogleGenAI } from "@google/genai";
 
-// Vercel serverless environment mein native ONNX bindings (.so files)
-// nahi milti, is liye 'cpu' backend hata kar sirf 'wasm' (portable) rakhte hain
-executionProviders.length = 0;
-executionProviders.push("wasm");
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-// Model ko sirf ek baar load karenge (variable mein cache kar ke)
-let embedder = null;
-
-async function getEmbedder() {
-  if (!embedder) {
-    embedder = await pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2");
-  }
-  return embedder;
+function normalize(vec) {
+  const norm = Math.sqrt(vec.reduce((sum, v) => sum + v * v, 0));
+  return vec.map((v) => v / norm);
 }
 
-// Ek text chunk ko embedding (numbers ki list) mein convert karta hai
-export async function generateEmbedding(text) {
-  const model = await getEmbedder();
-  const output = await model(text, { pooling: "mean", normalize: true });
-  return Array.from(output.data); // Float32Array ko normal array mein convert
+export async function generateEmbedding(text, taskType = "RETRIEVAL_DOCUMENT") {
+  const response = await ai.models.embedContent({
+    model: "gemini-embedding-001",
+    contents: text,
+    config: { taskType, outputDimensionality: 768 },
+  });
+  return normalize(response.embeddings[0].values);
 }
 
-// Multiple chunks ke liye embeddings ek sath banata hai
 export async function generateEmbeddings(chunks) {
   const embeddings = [];
   for (const chunk of chunks) {
-    const embedding = await generateEmbedding(chunk);
+    const embedding = await generateEmbedding(chunk, "RETRIEVAL_DOCUMENT");
     embeddings.push(embedding);
   }
   return embeddings;

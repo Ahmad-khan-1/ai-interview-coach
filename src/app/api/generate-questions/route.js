@@ -96,7 +96,10 @@ export async function POST(request) {
     const chunkEmbeddings = await generateEmbeddings(chunks);
 
     // Step 3: Job description ka embedding banao
-    const jobEmbedding = await generateEmbedding(normalizedJobDescription);
+    const jobEmbedding = await generateEmbedding(
+      normalizedJobDescription,
+      "RETRIEVAL_QUERY",
+    );
 
     // Step 4: Job description se sabse relevant resume chunks dhoondo
     const relevantChunks = findRelevantChunks(

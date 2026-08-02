@@ -2,7 +2,9 @@ import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 
 export const metadata = {
+  metadataBase: new URL("https://your-live-domain.vercel.app"),
   title: "AI Interview Prep Coach",
+
   description:
     "Upload your resume and job description to get personalized interview questions, practice your answers, and receive instant AI feedback.",
   keywords: [
