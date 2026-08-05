@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { Calendar, ChevronRight, Trash2 } from "lucide-react";
 import Logo from "@/components/ui/Logo";
 import ThemeToggle from "@/components/ui/ThemeToggle";
+import Shimmer from "@/components/ui/Shimmer";
 import { UserButton, Show } from "@clerk/nextjs";
 
 export default function HistoryPage() {
@@ -71,7 +72,26 @@ export default function HistoryPage() {
         </p>
 
         {loading ? (
-          <p style={{ color: "var(--color-text-muted)" }}>Loading...</p>
+          <div className="space-y-4">
+            {[...Array(4)].map((_, index) => (
+              <div
+                key={index}
+                className="rounded-2xl p-4 sm:p-5"
+                style={{
+                  background: "var(--color-surface)",
+                  border:
+                    "1px solid color-mix(in srgb, var(--color-text-muted) 20%, transparent)",
+                }}
+              >
+                <Shimmer width="65%" height="14px" className="mb-3" />
+                <Shimmer width="50%" height="12px" className="mb-4" />
+                <div className="flex items-center gap-3">
+                  <Shimmer width="32px" height="32px" borderRadius="999px" />
+                  <Shimmer width="25%" height="12px" />
+                </div>
+              </div>
+            ))}
+          </div>
         ) : interviews.length === 0 ? (
           <div
             className="rounded-2xl p-8 text-center"

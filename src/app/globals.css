@@ -69,3 +69,29 @@ body {
 .wave-bar {
   animation: wave-pulse 1s ease-in-out infinite;
 }
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-surface);
+  background-image: linear-gradient(
+    90deg,
+    var(--color-surface) 0%,
+    color-mix(in srgb, var(--color-surface) 16%, #ffffff 84%) 40%,
+    color-mix(in srgb, var(--color-surface) 36%, #ffffff 64%) 50%,
+    color-mix(in srgb, var(--color-surface) 16%, #ffffff 84%) 60%,
+    var(--color-surface) 100%
+  );
+  background-size: 200% 100%;
+  background-position: -150% 0;
+  animation: shimmer 1.6s linear infinite;
+}

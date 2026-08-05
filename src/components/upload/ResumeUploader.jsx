@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Upload, FileCheck, Loader2 } from "lucide-react";
+import Shimmer from "@/components/ui/Shimmer";
 
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
 
@@ -80,11 +81,7 @@ export default function ResumeUploader({ onTextExtracted }) {
           className="flex justify-center mb-3"
         >
           {loading ? (
-            <Loader2
-              className="animate-spin"
-              style={{ color: "var(--color-accent)" }}
-              size={28}
-            />
+            <Shimmer width="48px" height="48px" borderRadius="999px" />
           ) : isDone ? (
             <FileCheck
               style={{ color: "var(--color-accent-secondary)" }}
@@ -96,11 +93,14 @@ export default function ResumeUploader({ onTextExtracted }) {
         </motion.div>
 
         <p className="font-medium text-sm sm:text-base break-words">
-          {fileName || "Drop your resume PDF here"}
+          {fileName ||
+            (loading
+              ? "Processing your resume..."
+              : "Drop your resume PDF here")}
         </p>
         <p className="text-sm mt-1 text-[var(--color-text-muted)] break-words">
           {loading
-            ? "Processing..."
+            ? "Extracting text and generating suggestions..."
             : isDone
               ? "Successfully uploaded"
               : "Or click to browse"}

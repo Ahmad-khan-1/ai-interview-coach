@@ -2,6 +2,39 @@ import { GoogleGenAI } from "@google/genai";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const isRetryableGeminiError = (error) => {
+  const status = error?.status || error?.statusCode;
+  const message = typeof error?.message === "string" ? error.message : "";
+
+  if (status === 503) return true;
+  return /503|UNAVAILABLE/i.test(message);
+};
+
+const executeWithGeminiRetry = async (fn) => {
+  const delays = [2000, 4000];
+  let lastError;
+
+  for (let attempt = 1; attempt <= delays.length + 1; attempt += 1) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+      if (!isRetryableGeminiError(error) || attempt === delays.length + 1) {
+        throw error;
+      }
+      const delay = delays[attempt - 1];
+      console.log(
+        `Gemini API busy, retrying (attempt ${attempt + 1}/${delays.length + 1}) in ${delay / 1000}s...`,
+      );
+      await sleep(delay);
+    }
+  }
+
+  throw lastError;
+};
+
 export async function generateInterviewQuestions(
   relevantResumeChunks,
   jobDescription,
@@ -19,10 +52,12 @@ ${jobDescription}
 Return ONLY a JSON array of questions, no extra text. Format:
 ["question 1", "question 2", "question 3", "question 4", "question 5"]`;
 
-  const response = await ai.models.generateContent({
-    model: "gemini-flash-latest",
-    contents: prompt,
-  });
+  const response = await executeWithGeminiRetry(() =>
+    ai.models.generateContent({
+      model: "gemini-flash-latest",
+      contents: prompt,
+    }),
+  );
 
   const responseText = response.text;
 
@@ -62,10 +97,12 @@ Return ONLY valid JSON in this exact format, no extra text:
   }
 }`;
 
-  const response = await ai.models.generateContent({
-    model: "gemini-flash-latest",
-    contents: prompt,
-  });
+  const response = await executeWithGeminiRetry(() =>
+    ai.models.generateContent({
+      model: "gemini-flash-latest",
+      contents: prompt,
+    }),
+  );
 
   const cleaned = response.text.replace(/```json|```/g, "").trim();
 

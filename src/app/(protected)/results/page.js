@@ -7,6 +7,7 @@ import Logo from "@/components/ui/Logo";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import FeedbackCard from "@/components/results/FeedbackCard";
 import SummaryCard from "@/components/results/SummaryCard";
+import Shimmer from "@/components/ui/Shimmer";
 
 export default function ResultsPage() {
   const [feedback, setFeedback] = useState(null);
@@ -71,18 +72,44 @@ export default function ResultsPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
+      <main className="min-h-screen flex items-center justify-center px-4 sm:px-6">
+        <div className="w-full max-w-3xl space-y-6">
           <div
-            className="w-10 h-10 rounded-full mx-auto mb-4 animate-spin border-4 border-t-transparent"
+            className="rounded-2xl p-6"
             style={{
-              borderColor: "var(--color-accent)",
-              borderTopColor: "transparent",
+              background: "var(--color-surface)",
+              border:
+                "1px solid color-mix(in srgb, var(--color-text-muted) 20%, transparent)",
             }}
-          />
-          <p style={{ color: "var(--color-text-muted)" }}>
-            Analyzing your answers...
-          </p>
+          >
+            <Shimmer
+              width="55%"
+              height="28px"
+              borderRadius="1.5rem"
+              className="mb-4"
+            />
+            <Shimmer width="100%" height="16px" className="mb-3" />
+            <Shimmer width="90%" height="16px" />
+          </div>
+
+          <div className="space-y-4">
+            {[...Array(3)].map((_, index) => (
+              <div
+                key={index}
+                className="rounded-2xl p-5"
+                style={{
+                  background: "var(--color-surface)",
+                  border:
+                    "1px solid color-mix(in srgb, var(--color-text-muted) 20%, transparent)",
+                }}
+              >
+                <Shimmer width="30%" height="14px" className="mb-4" />
+                <Shimmer width="100%" height="16px" className="mb-3" />
+                <Shimmer width="100%" height="12px" className="mb-2" />
+                <Shimmer width="85%" height="12px" />
+              </div>
+            ))}
+          </div>
         </div>
       </main>
     );

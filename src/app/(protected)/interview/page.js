@@ -8,6 +8,7 @@ import ThemeToggle from "@/components/ui/ThemeToggle";
 import { UserButton, Show } from "@clerk/nextjs";
 import ProgressBar from "@/components/interview/ProgressBar";
 import QuestionCard from "@/components/interview/QuestionCard";
+import Shimmer from "@/components/ui/Shimmer";
 
 export default function InterviewPage() {
   const [questions, setQuestions] = useState([]);
@@ -61,17 +62,20 @@ export default function InterviewPage() {
   if (loading) {
     return (
       <main className="min-h-screen flex items-center justify-center px-4 sm:px-6">
-        <div className="text-center">
-          <div
-            className="w-10 h-10 rounded-full mx-auto mb-4 animate-spin border-4 border-t-transparent"
-            style={{
-              borderColor: "var(--color-accent)",
-              borderTopColor: "transparent",
-            }}
-          />
-          <p style={{ color: "var(--color-text-muted)" }}>
-            Preparing your personalized questions...
-          </p>
+        <div
+          className="w-full max-w-3xl rounded-3xl p-6 sm:p-8"
+          style={{
+            background: "var(--color-surface)",
+            border:
+              "1px solid color-mix(in srgb, var(--color-text-muted) 20%, transparent)",
+          }}
+        >
+          <div className="space-y-5">
+            <Shimmer width="45%" height="14px" borderRadius="999px" />
+            <Shimmer width="100%" height="32px" borderRadius="1.25rem" />
+            <Shimmer width="100%" height="180px" borderRadius="2rem" />
+            <Shimmer width="32%" height="48px" borderRadius="2rem" />
+          </div>
         </div>
       </main>
     );
